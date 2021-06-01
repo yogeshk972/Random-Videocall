@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "597827626593",
+    "project_id": "random-video-call-81e89",
+    "storage_bucket": "random-video-call-81e89.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597827626593:android:1c423df242e99ac4392c20",
+        "android_client_info": {
+          "package_name": "com.example.randomvideocall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "597827626593-fq580v2epvldvd8ssbm8rp96j20jafll.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtTfSuLQ6_wr518q-uOU3KxVLk6dIwCdA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "597827626593-fq580v2epvldvd8ssbm8rp96j20jafll.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
