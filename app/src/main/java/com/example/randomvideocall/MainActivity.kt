@@ -12,91 +12,120 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 
+  val TAG = "asd"
 
   class MainActivity : AppCompatActivity() {
-    private lateinit var auth: FirebaseAuth
-    private var currentUser: FirebaseUser? = null
-    private var userList = mutableListOf<FirebaseUser?>()
+      private var currentUser: FirebaseUser? = null
+      private lateinit var auth: FirebaseAuth
+      private lateinit var reference : DatabaseReference
+      private var userList = mutableListOf<String?>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-
-        val btn = findViewById<Button>(R.id.callBtn)
-        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+      override fun onCreate(savedInstanceState: Bundle?) {
+          super.onCreate(savedInstanceState)
+          setContentView(R.layout.activity_main)
 
 
-        btn.setOnClickListener{
+          val btn = findViewById<Button>(R.id.callBtn)
+          val progressBar = findViewById<ProgressBar>(R.id.progressBar)
 
-            auth = FirebaseAuth.getInstance()
+          btn.setOnClickListener{
 
-            btn.isEnabled = false
-            progressBar.visibility = View.VISIBLE
+              auth = FirebaseAuth.getInstance()
+              reference = FirebaseDatabase.getInstance().getReference().child("users")
 
-            auth.signInAnonymously().addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "Signed in Anonymously", Toast.LENGTH_SHORT).show()
+              btn.isEnabled = false
+              progressBar.visibility = View.VISIBLE
 
-                    currentUser= auth.currentUser
+              auth.signInAnonymously().addOnCompleteListener { task ->
+                  if (task.isSuccessful) {
+                      Toast.makeText(this, "Signed in Anonymously", Toast.LENGTH_SHORT).show()
 
-                    val timer = object : CountDownTimer(15*1000, 1000) {
+                      addCurrentUser()
 
-                        override fun onTick(millisUntilFinished: Long) {
-                            Log.e("asd","time rem: ${millisUntilFinished / 1000}")
-                            getAllUsers()
-                            Log.e("asd","list : ${ userList }")
-                        }
+                      val timer = object : CountDownTimer(15*1000, 1000) {
 
-                        override fun onFinish() {
-                            Toast.makeText( applicationContext,"finish",Toast.LENGTH_LONG).show()
+                          override fun onTick(millisUntilFinished: Long) {
+                              Log.e(TAG,"time rem: ${millisUntilFinished / 1000}")
+                              getAllUsers()
 
-                            Log.e("asd"," current user : ${currentUser?.uid}")
+                              if( userList.size > 1 ){
+                                  startVideoChatting()
+                              }
 
-                            btn.isEnabled = true
-                            progressBar.visibility= View.INVISIBLE
-                            currentUser?.delete()
-                        }
-                    }
+                              Log.e(TAG,"list : ${ userList }")
+                          }
 
-                    timer.start()
+                          override fun onFinish() {
 
-                } else {
-                    Toast.makeText(this, "try again after some time", Toast.LENGTH_LONG).show()
+                              if( userList.size > 1 ){
+                                  startVideoChatting()
+                              }
 
-                    btn.isEnabled = true
-                    progressBar.visibility= View.INVISIBLE
-                    currentUser?.delete()
-                }
-            }
+                              btn.isEnabled = true
+                              progressBar.visibility= View.INVISIBLE
+
+                              deleteUser()
+                          }
+                      }
+
+                      timer.start()
+
+                  } else {
+                      Toast.makeText(this, "try again after some time", Toast.LENGTH_LONG).show()
+
+                      btn.isEnabled = true
+                      progressBar.visibility= View.INVISIBLE
+
+                      deleteUser()
+                  }
+              }
 
 
 
-        }
-    }
+          }
+      }
 
-    fun getAllUsers() {
-        val ref : DatabaseReference = FirebaseDatabase.getInstance().getReference().child("users")
+      fun addCurrentUser(){
+          currentUser= auth.currentUser
+          if( currentUser != null ) {
+              reference.child( currentUser!!.uid ).setValue("")
+          }
+      }
+
+      fun deleteUser() {
+          if (currentUser != null) {
+              reference.child(currentUser!!.uid).removeValue()
+          }
+          currentUser?.delete()
+      }
+
+      fun getAllUsers() {
+
+        Log.e(TAG,"xx $reference")
 
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 userList.clear()
 
-                Log.e("asd","snap : $snapshot")
+                Log.e(TAG,"snap : $snapshot")
                 for( user in snapshot.children ){
-                    Log.e("asd","he : $user")
-                    userList.add(user.getValue(FirebaseUser::class.java))
+                    Log.e(TAG,"he : $user")
+                    userList.add(user.key )
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("error","error : ${error}")
+                Log.e(TAG,"error : ${error}")
             }
         }
-
-        ref.addValueEventListener(listener)
-
+          reference.addValueEventListener(listener)
     }
 
+    fun startVideoChatting(){
+        userList.remove( currentUser!!.uid )
+        val user1= currentUser!!.uid
+        val user2= userList.random()
+        Log.e("asd","$user1 , $user2")
+    }
 
 }
