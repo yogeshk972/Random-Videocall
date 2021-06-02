@@ -1,5 +1,6 @@
-  package com.example.randomvideocall
+package com.example.randomvideocall
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -17,7 +18,7 @@ import com.google.firebase.database.*
   class MainActivity : AppCompatActivity() {
       private var currentUser: FirebaseUser? = null
       private lateinit var auth: FirebaseAuth
-      private lateinit var reference : DatabaseReference
+      private lateinit var mref : DatabaseReference
       private var userList = mutableListOf<String?>()
 
       override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +32,7 @@ import com.google.firebase.database.*
           btn.setOnClickListener{
 
               auth = FirebaseAuth.getInstance()
-              reference = FirebaseDatabase.getInstance().getReference().child("users")
+              mref = FirebaseDatabase.getInstance().reference.child("users")
 
               btn.isEnabled = false
               progressBar.visibility = View.VISIBLE
@@ -49,7 +50,7 @@ import com.google.firebase.database.*
                               getAllUsers()
 
                               if( userList.size > 1 ){
-                                  startVideoChatting()
+                                  startVideoCalling()
                               }
 
                               Log.e(TAG,"list : ${ userList }")
@@ -57,8 +58,8 @@ import com.google.firebase.database.*
 
                           override fun onFinish() {
 
-                              if( userList.size > 1 ){
-                                  startVideoChatting()
+                              if( userList.size > 0 ){
+                                  startVideoCalling()
                               }
 
                               btn.isEnabled = true
@@ -80,36 +81,31 @@ import com.google.firebase.database.*
                   }
               }
 
-
-
           }
       }
 
       fun addCurrentUser(){
           currentUser= auth.currentUser
           if( currentUser != null ) {
-              reference.child( currentUser!!.uid ).setValue("")
+              mref.push()
+              mref.child( currentUser!!.uid ).setValue("")
           }
       }
 
       fun deleteUser() {
           if (currentUser != null) {
-              reference.child(currentUser!!.uid).removeValue()
+              mref.child(currentUser!!.uid).removeValue()
           }
           currentUser?.delete()
       }
 
       fun getAllUsers() {
 
-        Log.e(TAG,"xx $reference")
-
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 userList.clear()
 
-                Log.e(TAG,"snap : $snapshot")
                 for( user in snapshot.children ){
-                    Log.e(TAG,"he : $user")
                     userList.add(user.key )
                 }
             }
@@ -118,14 +114,27 @@ import com.google.firebase.database.*
                 Log.e(TAG,"error : ${error}")
             }
         }
-          reference.addValueEventListener(listener)
+          mref.addValueEventListener(listener)
     }
 
-    fun startVideoChatting(){
+    fun startVideoCalling(){
+        if( !userList.contains(currentUser!!.uid) ){
+            return
+        }
+
         userList.remove( currentUser!!.uid )
         val user1= currentUser!!.uid
-        val user2= userList.random()
-        Log.e("asd","$user1 , $user2")
+        val user2= userList.random()!!
+        Log.e("asd","calling starts, users : $user1 , $user2")
+
+        mref.child(user1).removeValue()
+        mref.child(user2).removeValue()
+
+        val intent = Intent(this, VideoCall::class.java).apply {
+            putExtra("user1",user1)
+            putExtra("user2",user2)
+        }
+        startActivity(intent)
     }
 
 }

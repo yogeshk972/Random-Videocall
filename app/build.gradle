@@ -48,7 +48,7 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:28.0.1')
     implementation 'com.google.firebase:firebase-analytics-ktx'
-
     implementation 'com.google.firebase:firebase-database'
 
+    implementation 'com.github.agorabuilder:native-full-sdk:3.4.1'
 }
