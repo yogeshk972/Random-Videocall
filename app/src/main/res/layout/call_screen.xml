@@ -13,20 +13,12 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/remoteUser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="10dp"
-            android:text=""
-            android:textSize="28sp" />
-
-        <TextView
             android:id="@+id/callState"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Ringing"
+            android:layout_marginTop="30dp"
+            android:text="calling"
             android:textAllCaps="true"
             android:textSize="16sp" />
 
@@ -35,8 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="10dp"
             android:text="00:00"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="16sp" />
@@ -51,20 +42,22 @@
         android:orientation="vertical"
         android:padding="0dip">
 
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/remoteVideo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:orientation="horizontal" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_purple" />
 
-        <RelativeLayout
+        <FrameLayout
             android:id="@+id/localVideo"
-            android:layout_width="150dp"
-            android:layout_height="200dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true" />
+            android:layout_width="140dp"
+            android:layout_height="180dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray" />
+
 
     </RelativeLayout>
 
@@ -75,15 +68,36 @@
         android:layout_weight="1"
         android:background="@color/browser_actions_bg_grey">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/hangupButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
-            android:text="END call"
+            android:text="end call"
             android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/switchCamera"
+            android:layout_width= "50dp"
+            android:layout_height= "50dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight= "20dp"
+            android:layout_toLeftOf="@+id/hangupButton"
+            android:background="@drawable/btn_switch_camera" />
+
+        <ImageView
+            android:id="@+id/muteUnmute"
+            android:layout_width= "50dp"
+            android:layout_height= "50dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft= "20dp"
+            android:layout_toRightOf="@+id/hangupButton"
+            android:background="@drawable/mute_img" />
+
 
     </RelativeLayout>
 

@@ -51,4 +51,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
 
     implementation 'com.github.agorabuilder:native-full-sdk:3.4.1'
+
+    implementation 'org.slf4j:slf4j-android:1.6.1-RC1'
+
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.0"))
+
+    // define any required OkHttp artifacts without version
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+
 }

@@ -49,8 +49,9 @@ import com.google.firebase.database.*
                               Log.e(TAG,"time rem: ${millisUntilFinished / 1000}")
                               getAllUsers()
 
-                              if( userList.size > 1 ){
+                              if( userList.size >=2 ){
                                   startVideoCalling()
+                                  cancel()
                               }
 
                               Log.e(TAG,"list : ${ userList }")
@@ -58,7 +59,7 @@ import com.google.firebase.database.*
 
                           override fun onFinish() {
 
-                              if( userList.size > 0 ){
+                              if( userList.size >= 2 ){
                                   startVideoCalling()
                               }
 
