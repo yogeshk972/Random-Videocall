@@ -67,6 +67,8 @@ val TAG = "asd"
 
                               if( userList.size >= 2 ){
                                   startVideoCalling()
+                              }else{
+                                  Toast.makeText(applicationContext, "try again after some time", Toast.LENGTH_LONG).show()
                               }
 
                               btn.isEnabled = true
