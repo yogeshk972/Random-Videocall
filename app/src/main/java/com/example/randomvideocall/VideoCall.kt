@@ -49,9 +49,7 @@ class VideoCall : AppCompatActivity() {
 
             super.onJoinChannelSuccess(channel, uid, elapsed)
             runOnUiThread {
-
                 Log.e("qwe", "join succ")
-
             }
         }
 
@@ -83,12 +81,15 @@ class VideoCall : AppCompatActivity() {
         if (checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID) &&
             checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID) &&
             checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
-            initEngineAndJoinChannel();
+            initEngineAndJoinChannel()
         }
 
         val endCall = findViewById<MaterialButton>(R.id.hangupButton)
         endCall.setOnClickListener{
             finishCalling()
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
         }
 
         val switchCamera = findViewById<ImageView>(R.id.switchCamera)
@@ -99,7 +100,7 @@ class VideoCall : AppCompatActivity() {
         val muteUnmute = findViewById<ImageView>(R.id.muteUnmute)
         muteUnmute.setOnClickListener {
             isMuted = !isMuted
-            mRtcEngine.muteLocalAudioStream(isMuted);
+            mRtcEngine.muteLocalAudioStream(isMuted)
             val res: Int = if (isMuted) R.drawable.btn_mute else R.drawable.btn_unmute
             muteUnmute.setImageResource(res)
         }
@@ -111,7 +112,7 @@ class VideoCall : AppCompatActivity() {
         runOnUiThread {
 
             mRtcEngine.enableVideo()
-            mRtcEngine!!.setVideoEncoderConfiguration(
+            mRtcEngine.setVideoEncoderConfiguration(
                 VideoEncoderConfiguration(
                     VideoEncoderConfiguration.VD_640x360,
                     VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
@@ -183,13 +184,14 @@ class VideoCall : AppCompatActivity() {
         }
     }
 
+
     private fun initEngineAndJoinChannel(){
         try {
             mRtcEngine = RtcEngine.create(
-                getBaseContext(),
+                baseContext,
                 getString(R.string.appId),
                 mRtcEventHandler
-            );
+            )
         }catch (e: Exception){
             Log.e(TAG, "${e.printStackTrace()}")
         }
@@ -202,8 +204,9 @@ class VideoCall : AppCompatActivity() {
 
     private fun joinChannel(){
         val token = "006dc040b1b9c374e3c8ae2fab6d8c4d802IAB6ctmM4iAFrDegiEBhcEth30ntjBvllS6gtUno6cspJWLMzZAAAAAAEAD7cHweRVi5YAEAAQBEWLlg"
-        mRtcEngine.joinChannel(token, "test-channel", "Extra Optional Data", 0);
+        mRtcEngine.joinChannel(token, "test-channel", "Extra Optional Data", 0)
     }
+
 
     private fun joinFriend(strangerId: String) {
         channelName = strangerId
@@ -213,7 +216,6 @@ class VideoCall : AppCompatActivity() {
 
     private fun finishCalling() {
         mRtcEngine.leaveChannel()
-        startActivity( Intent(this, MainActivity::class.java) )
     }
 
     private fun startCalling() {
